@@ -17,7 +17,7 @@ namespace Practise
         {
             return orderedCollection.ThenByDescending(expression);
         }
-        );
+
         public static IEnumerable<T> Join<T, U, K, V>(this IEnumerable<T> outer, IEnumerable<U> inner, Func<T, K> outerKeySelector, Func<U, K> innerKeySelector, Func<T, U, V> resultSelector)
         {
             return outer.Join(inner, outerKeySelector, innerKeySelector, resultSelector);

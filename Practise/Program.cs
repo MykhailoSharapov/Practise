@@ -10,8 +10,7 @@ namespace Practise
     {
         static void Main(string[] args)
         {
-            var f = new List<bool>();
-            Toy.OrderBy(o => o, f).ThenBy(t=>t);
+
         }
     }
 }
