@@ -43,9 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LogLevel.cs" />
+    <Compile Include="Enums\LogLevel.cs" />
+    <Compile Include="Helpers\FilePathDateComparer.cs" />
     <Compile Include="MyEnumerator.cs" />
-    <Compile Include="MyLINQExtensions.cs" />
+    <Compile Include="Extensions\MyLINQExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shlist.cs" />
@@ -53,8 +54,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Enums\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
