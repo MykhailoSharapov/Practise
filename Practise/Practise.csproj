@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="Enums\LogLevel.cs" />
     <Compile Include="Helpers\FilePathDateComparer.cs" />
+    <Compile Include="Interfaces\IFileService.cs" />
+    <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="MyEnumerator.cs" />
     <Compile Include="Extensions\MyLINQExtensions.cs" />
     <Compile Include="Program.cs" />
