@@ -87,6 +87,19 @@ namespace Practise
         /// my async addRange.
         /// </summary>
         /// /// <param name="x">some list to add.</param>
+        public void AddRangeAsync(Shlist<T> x)
+        {
+            Task.Run(async () =>
+            {
+                await Task.Delay(this.GetRandNum());
+                this.AddRange(x);
+            });
+        }
+
+        /// <summary>
+        /// my async addRange.
+        /// </summary>
+        /// /// <param name="x">some list to add.</param>
         public void AddRangeAsync(List<T> x)
         {
             Task.Run(async () =>
@@ -124,7 +137,7 @@ namespace Practise
         /// </summary>
         /// <param name="expression">lambda.</param>
         /// <returns>readonlyCollection.</returns>
-        public IReadOnlyCollection<T> Select(Func<T, bool> expression) => this.ConvertIEnumerableToIReadOnly((IEnumerable<T>)this.source.Select(expression));
+        public IReadOnlyCollection<bool> Select(Func<T, bool> expression) => this.ConvertIEnumerableToIReadOnly(this.source.Select(expression));
 
         /// <summary>
         /// MyOrderByFunk.
@@ -145,7 +158,7 @@ namespace Practise
         /// </summary>
         /// <param name="expression">lambda.</param>
         /// <returns>readonlyCollection.</returns>
-        public IReadOnlyCollection<T> GroupBy(Func<T, bool> expression) => this.ConvertIGroupingToIReadOnly(this.source.GroupBy(expression));
+        public IReadOnlyCollection<IGrouping<bool, T>> GroupBy(Func<T, bool> expression) => this.ConvertIGroupingToIReadOnly(this.source.GroupBy(expression));
 
         /// <summary>
         /// MyReverseFunc.
@@ -202,6 +215,12 @@ namespace Practise
         /// <param name="expression">lambda.</param>
         /// <returns>readonlyCollection.</returns>
         public IReadOnlyCollection<T> Distinct() => this.ConvertIEnumerableToIReadOnly(this.source.Distinct());
+
+        /// <summary>
+        /// MyDistinktFunc.
+        /// </summary>
+        /// <returns>readonlyCollection.</returns>
+        public IEnumerable<T> DistinctEnum() => this.source.Distinct();
 
         /// <summary>
         /// MyDistinktFunc.
@@ -287,6 +306,18 @@ namespace Practise
             }
 
             return list;
+        }
+
+        /// <summary>
+        /// MyFunkAddSomeRange.
+        /// </summary>
+        /// <param name="someRange">some range.</param>
+        public void AddRange(Shlist<T> someRange)
+        {
+            foreach (T t in someRange)
+            {
+                this.Add(t);
+            }
         }
 
         /// <summary>
@@ -427,6 +458,15 @@ namespace Practise
         public void RemoveAfter(T x) => this.RemoveAt(this.IndexOf(x) + 1);
 
         /// <summary>
+        /// clearList.
+        /// </summary>
+        public void Clear()
+        {
+            //Array.Resize(ref this.source, 1);
+            this.source = new T[1];
+        }
+
+        /// <summary>
         /// sorting.
         /// </summary>
         public void Sort()
@@ -473,9 +513,14 @@ namespace Practise
             return collection.ToList().AsReadOnly();
         }
 
-        private IReadOnlyCollection<T> ConvertIGroupingToIReadOnly(IEnumerable<IGrouping<bool, T>> collection)
+        private IReadOnlyCollection<bool> ConvertIEnumerableToIReadOnly(IEnumerable<bool> collection)
         {
-            return (IReadOnlyCollection<T>)collection.ToList().AsReadOnly();
+            return collection.ToArray().ToList().AsReadOnly();
+        }
+
+        private IReadOnlyCollection<IGrouping<bool, T>> ConvertIGroupingToIReadOnly(IEnumerable<IGrouping<bool, T>> collection)
+        {
+            return collection.ToList().AsReadOnly();
         }
 
         private int GetRandNum()

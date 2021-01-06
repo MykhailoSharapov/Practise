@@ -13,10 +13,9 @@ namespace Practise
     {
         private const string TimeFormat = "hh:mm:ss";
         private static readonly Lazy<Logger> InstanceValue = new Lazy<Logger>(() => new Logger());
+        private static int logMessagesCount;
         private readonly FileService fileService;
-        private static int LogMessagesCount;
-        public delegate string LogCountHandler(int count);
-        public event LogCountHandler LogHandler;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Logger"/> class.
         /// Construcor of logger need initialize fileservice to work with him.
@@ -27,10 +26,22 @@ namespace Practise
         }
 
         /// <summary>
+        /// delegate for messages count.
+        /// </summary>
+        /// <param name="count">count.</param>
+        /// <returns>message.</returns>
+        public delegate string LogCountHandler(int count);
+
+        /// <summary>
+        /// event for count.
+        /// </summary>
+        public event LogCountHandler LogHandler;
+
+        /// <summary>
         /// Gets instance of logger to transfer it in plases where it will uses.
         /// </summary>
         public static Logger Instance => InstanceValue.Value;
-       
+
         /// <summary>
         /// Funk for write log with level error.
         /// </summary>
@@ -71,13 +82,13 @@ namespace Practise
 
         private void WriteData(string data)
         {
-            LogMessagesCount++;            
+            logMessagesCount++;
             this.fileService.WriteAsync(data);
             Console.WriteLine(data);
-            if (LogMessagesCount % 10 == 0)
+            if (logMessagesCount % 10 == 0)
             {
-                var message = LogHandler.Invoke(LogMessagesCount);
-                if (!message.Equals(String.Empty))
+                var message = this.LogHandler.Invoke(logMessagesCount);
+                if (!message.Equals(string.Empty))
                 {
                     this.fileService.WriteAsync(message);
                 }
