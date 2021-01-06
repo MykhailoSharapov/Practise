@@ -17,7 +17,7 @@ namespace Practise
         private const string FileNameMask = "hh.mm.ss dd.MM.yyyy";
         private const int CountSavedLogs = 3;
         private const string DirectoryPath = "Logs\\";
-        private static readonly FileService InstanceValue = new FileService();
+        private static readonly Lazy<FileService> InstanceValue = new Lazy<FileService>(() => new FileService());
         private readonly string fileName;
         private readonly double fileLifetime = 2;
         private readonly StreamWriter sw;
@@ -37,7 +37,7 @@ namespace Practise
         /// <summary>
         /// Gets instance of Logger setting for sigleton pattern release.
         /// </summary>
-        public static FileService Instance => InstanceValue;
+        public static FileService Instance => InstanceValue.Value;
 
         /// <summary>
         /// Writing input message in file.
@@ -45,8 +45,16 @@ namespace Practise
         /// <param name="text">input text.</param>
         public void Write(string text)
         {
-            // File.AppendAllText($"{DirectoryPath}{this.fileName}", text);
             this.sw.WriteLine(text);
+        }
+
+        /// <summary>
+        /// Writing input message in file asyncronous.
+        /// </summary>
+        /// <param name="text">input text.</param>
+        public void WriteAsync(string text)
+        {
+            this.sw.WriteLineAsync(text);
         }
 
         private void CheckDirectory()

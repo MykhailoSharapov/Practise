@@ -12,9 +12,11 @@ namespace Practise
     public class Logger : ILogger
     {
         private const string TimeFormat = "hh:mm:ss";
-        private static readonly Logger InstanceValue = new Logger();
+        private static readonly Lazy<Logger> InstanceValue = new Lazy<Logger>(() => new Logger());
         private readonly FileService fileService;
-
+        private static int LogMessagesCount;
+        public delegate string LogCountHandler(int count);
+        public event LogCountHandler LogHandler;
         /// <summary>
         /// Initializes a new instance of the <see cref="Logger"/> class.
         /// Construcor of logger need initialize fileservice to work with him.
@@ -27,8 +29,8 @@ namespace Practise
         /// <summary>
         /// Gets instance of logger to transfer it in plases where it will uses.
         /// </summary>
-        public static Logger Instance => InstanceValue;
-
+        public static Logger Instance => InstanceValue.Value;
+       
         /// <summary>
         /// Funk for write log with level error.
         /// </summary>
@@ -69,8 +71,17 @@ namespace Practise
 
         private void WriteData(string data)
         {
-            this.fileService.Write(data);
+            LogMessagesCount++;            
+            this.fileService.WriteAsync(data);
             Console.WriteLine(data);
+            if (LogMessagesCount % 10 == 0)
+            {
+                var message = LogHandler.Invoke(LogMessagesCount);
+                if (!message.Equals(String.Empty))
+                {
+                    this.fileService.WriteAsync(message);
+                }
+            }
         }
     }
 }
