@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\LogLevel.cs" />
+    <Compile Include="LoggerConfigurations.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Helpers\FilePathDateComparer.cs" />
     <Compile Include="Interfaces\IFileService.cs" />

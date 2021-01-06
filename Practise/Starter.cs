@@ -16,7 +16,6 @@ namespace Practise
     public class Starter
     {
         private const int Magicvalue = 500;
-        private readonly Logger logger;
         private readonly TimerCallback threeSecondsCallback;
         private readonly Timer threeSecondsTimer;
         private readonly TimerCallback sevenSecondsCallback;
@@ -31,7 +30,6 @@ namespace Practise
         {
             this.rand = new Random();
             this.shlist = new Shlist<int>();
-            this.logger = Logger.Instance;
             this.threeSecondsCallback = new TimerCallback(this.ThreeSecondsAction);
             this.threeSecondsTimer = new Timer(this.threeSecondsCallback, null, 0, 3000);
             this.sevenSecondsCallback = new TimerCallback(this.SevenSecondsAction);
@@ -48,68 +46,70 @@ namespace Practise
         /// </summary>
         public void Run()
         {
-            this.logger.LogInfo("shlist create succesfull");
+           /* Logger.Instance.LogInfo("shlist create succesfull");
             this.shlist.AddAsync(this.rand.Next());
-            this.logger.LogInfo("Add async succesfull");
+            Logger.Instance.LogInfo("Add async succesfull");
             this.shlist.AddRangeAsync(this.shlist);
-            this.logger.LogInfo("AddRangeAsync succesfull");
+            Logger.Instance.LogInfo("AddRangeAsync succesfull");
             this.shlist.RemoveItemAsync(0);
-            this.logger.LogInfo("RemoveItemAsync succesfull");
+            Logger.Instance.LogInfo("RemoveItemAsync succesfull");
             this.shlist.Select(x => x > Magicvalue);
-            this.logger.LogInfo("Select succesfull");
+            Logger.Instance.LogInfo("Select succesfull");
             this.shlist.Where(x => x > Magicvalue);
-            this.logger.LogInfo("Where succesfull");
+            Logger.Instance.LogInfo("Where succesfull");
             this.shlist.OrderBy(x => x > Magicvalue);
-            this.logger.LogInfo("OrderBy succesfull");
+            Logger.Instance.LogInfo("OrderBy succesfull");
             this.shlist.OrderByDistinct(x => x > Magicvalue);
-            this.logger.LogInfo("OrderByDistinct succesfull");
+            Logger.Instance.LogInfo("OrderByDistinct succesfull");
             this.shlist.GroupBy(x => x > Magicvalue);
-            this.logger.LogInfo("GroupBy succesfull");
+            Logger.Instance.LogInfo("GroupBy succesfull");
             this.shlist.Reverse();
-            this.logger.LogInfo("Reverse succesfull");
+            Logger.Instance.LogInfo("Reverse succesfull");
             this.shlist.All(x => x > Magicvalue);
-            this.logger.LogInfo("All succesfull");
+            Logger.Instance.LogInfo("All succesfull");
             this.shlist.Any(x => x > Magicvalue);
-            this.logger.LogInfo("Any succesfull");
+            Logger.Instance.LogInfo("Any succesfull");
             this.shlist.CountLinQ();
-            this.logger.LogInfo("CountLinQ succesfull");
+            Logger.Instance.LogInfo("CountLinQ succesfull");
             this.shlist.Take(5);
-            this.logger.LogInfo("Take succesfull");
+            Logger.Instance.LogInfo("Take succesfull");
             this.shlist.Skip(5);
-            this.logger.LogInfo("Skip succesfull");
+            Logger.Instance.LogInfo("Skip succesfull");
             this.shlist.Distinct();
-            this.logger.LogInfo("Distinct succesfull");
+            Logger.Instance.LogInfo("Distinct succesfull");
             this.shlist.Expect((IEnumerable<int>)this.shlist);
-            this.logger.LogInfo("Expect succesfull");
+            Logger.Instance.LogInfo("Expect succesfull");
             this.shlist.Intersect((IEnumerable<int>)this.shlist);
-            this.logger.LogInfo("Intersect succesfull");
+            Logger.Instance.LogInfo("Intersect succesfull");
             this.shlist.Concat((IEnumerable<int>)this.shlist);
-            this.logger.LogInfo("Concat succesfull");
+            Logger.Instance.LogInfo("Concat succesfull");
             this.shlist.First();
-            this.logger.LogInfo("First succesfull");
+            Logger.Instance.LogInfo("First succesfull");
             this.shlist.FirstOrDefault();
-            this.logger.LogInfo("FirstOrDefault succesfull");
+            Logger.Instance.LogInfo("FirstOrDefault succesfull");
             this.shlist.Single();
-            this.logger.LogInfo("Single succesfull");
+            Logger.Instance.LogInfo("Single succesfull");
             this.shlist.SingleOrDefault();
-            this.logger.LogInfo("SingleOrDefault succesfull");
+            Logger.Instance.LogInfo("SingleOrDefault succesfull");
             this.shlist.ElementAt(0);
-            this.logger.LogInfo("ElementAt succesfull");
+            Logger.Instance.LogInfo("ElementAt succesfull");
             this.shlist.ElementAtOrDefault(0);
-            this.logger.LogInfo("ElementAtOrDefault succesfull");
+            Logger.Instance.LogInfo("ElementAtOrDefault succesfull");
             this.shlist.Last();
-            this.logger.LogInfo("Last succesfull");
+            Logger.Instance.LogInfo("Last succesfull");
             this.shlist.LastOrDefault();
-            this.logger.LogInfo("LastOrDefault succesfull");
+            Logger.Instance.LogInfo("LastOrDefault succesfull");*/
         }
 
         private void ThreeSecondsAction(object obj)
         {
+            Logger.Instance.LogInfo("add async from threeseconaction");
             this.shlist.AddAsync(this.rand.Next());
         }
 
         private void SevenSecondsAction(object obj)
         {
+            Logger.Instance.LogInfo("distinkt from seven secon action");
             IReadOnlyCollection<int> bufferShlist = this.shlist.Distinct();
             this.shlist.Clear();
             this.shlist.AddRangeAsync(bufferShlist.ToArray());

@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System;
+
 namespace Practise
 {
     /// <summary>
@@ -12,6 +14,7 @@ namespace Practise
         private static void Main(string[] args)
         {
             new Starter().Run();
+            Console.ReadLine();
         }
     }
 }

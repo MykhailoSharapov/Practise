@@ -7,19 +7,16 @@ namespace Practise
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading;
 
     /// <summary>
     /// FileService created for writing messages to file.
     /// </summary>
     public class FileService
     {
-        private const string FileExtension = ".txt";
-        private const string FileNameMask = "hh.mm.ss dd.MM.yyyy";
-        private const int CountSavedLogs = 3;
-        private const string DirectoryPath = "Logs\\";
+        static SemaphoreSlim sem = new SemaphoreSlim(1, 1);
         private static readonly Lazy<FileService> InstanceValue = new Lazy<FileService>(() => new FileService());
         private readonly string fileName;
-        private readonly double fileLifetime = 2;
         private readonly StreamWriter sw;
 
         static FileService()
@@ -30,8 +27,8 @@ namespace Practise
         {
             this.CheckDirectory();
             this.CheckFilesInDirect();
-            this.fileName = $"{DateTime.UtcNow.ToString(FileNameMask)}{FileExtension}";
-            this.sw = new StreamWriter($"{DirectoryPath}{this.fileName}", true);
+            this.fileName = this.GetFileName();
+            this.sw = new StreamWriter($"{LoggerConfigurations.DirectoryPath}{this.fileName}", true);
         }
 
         /// <summary>
@@ -45,7 +42,9 @@ namespace Practise
         /// <param name="text">input text.</param>
         public void Write(string text)
         {
+            sem.Wait();
             this.sw.WriteLine(text);
+            sem.Release();
         }
 
         /// <summary>
@@ -54,20 +53,35 @@ namespace Practise
         /// <param name="text">input text.</param>
         public void WriteAsync(string text)
         {
+            sem.WaitAsync();
             this.sw.WriteLineAsync(text);
+            sem.Release();
+        }
+
+        /// <summary>
+        /// Writing input message in file asyncronous.
+        /// </summary>
+        public void WriteBackUp()
+        {
+            Thread.Sleep(1000);
+            File.Copy($"{LoggerConfigurations.DirectoryPath}{this.fileName}", $"{LoggerConfigurations.BackUpDirectoryPath}{this.GetFileName()}");
         }
 
         private void CheckDirectory()
         {
-            if (!Directory.Exists(DirectoryPath))
+            if (!Directory.Exists(LoggerConfigurations.DirectoryPath))
             {
-                Directory.CreateDirectory(DirectoryPath);
+                Directory.CreateDirectory(LoggerConfigurations.DirectoryPath);
+            }
+            if (!Directory.Exists(LoggerConfigurations.BackUpDirectoryPath))
+            {
+                Directory.CreateDirectory(LoggerConfigurations.BackUpDirectoryPath);
             }
         }
 
         private void CheckFilesInDirect()
         {
-            var filesPath = Directory.GetFiles(DirectoryPath, $"*{FileExtension}", SearchOption.TopDirectoryOnly);
+            var filesPath = Directory.GetFiles(LoggerConfigurations.DirectoryPath, $"*{LoggerConfigurations.FileExtension}", SearchOption.TopDirectoryOnly);
             if (filesPath.Length > 0)
             {
                 var files = new List<FileInfo>();
@@ -81,7 +95,7 @@ namespace Practise
 
                 for (var i = 0; i < files.Count; i++)
                 {
-                    if (DateTime.UtcNow - files[i].CreationTimeUtc > TimeSpan.FromDays(this.fileLifetime) || i >= CountSavedLogs - 1)
+                    if (DateTime.UtcNow - files[i].CreationTimeUtc > TimeSpan.FromDays(LoggerConfigurations.FileLifetime) || i >= LoggerConfigurations.CountSavedLogs - 1)
                     {
                         this.DeleteFile(files[i].FullName);
                     }
@@ -92,6 +106,11 @@ namespace Practise
         private void DeleteFile(string path)
         {
             File.Delete(path);
+        }
+
+        private string GetFileName()
+        {
+            return $"{DateTime.UtcNow.ToString(LoggerConfigurations.FileNameMask)}{LoggerConfigurations.FileExtension}";
         }
     }
 }
