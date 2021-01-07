@@ -48,6 +48,5 @@ namespace Practise
         {
             Logger.Instance.LogHandler += Logger.Instance.LogHandlerAction;
         }
-
     }
 }

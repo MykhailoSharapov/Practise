@@ -11,12 +11,11 @@ namespace Practise
     /// </summary>
     public class Logger : ILogger
     {
-        private static int logMessagesCount;
         private static readonly Lazy<Logger> InstanceValue = new Lazy<Logger>(() => new Logger());
+        private static int logMessagesCount;
 
         static Logger()
         {
-
         }
 
         /// <summary>
@@ -97,7 +96,7 @@ namespace Practise
 
             if (x % 10 == 0)
             {
-                result = $"----------------------{x.ToString()}strok-----------------------";
+                result = $"----------------------{x.ToString()} strok-----------------------";
             }
 
             return result;

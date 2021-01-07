@@ -2,10 +2,10 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using System;
-
 namespace Practise
 {
+    using System;
+
     /// <summary>
     /// Program.
     /// </summary>

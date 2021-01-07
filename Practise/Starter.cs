@@ -46,7 +46,7 @@ namespace Practise
         /// </summary>
         public void Run()
         {
-           /* Logger.Instance.LogInfo("shlist create succesfull");
+            Logger.Instance.LogInfo("shlist create succesfull");
             this.shlist.AddAsync(this.rand.Next());
             Logger.Instance.LogInfo("Add async succesfull");
             this.shlist.AddRangeAsync(this.shlist);
@@ -77,20 +77,36 @@ namespace Practise
             Logger.Instance.LogInfo("Skip succesfull");
             this.shlist.Distinct();
             Logger.Instance.LogInfo("Distinct succesfull");
-            this.shlist.Expect((IEnumerable<int>)this.shlist);
+            this.shlist.Expect(this.shlist.GetSource());
             Logger.Instance.LogInfo("Expect succesfull");
-            this.shlist.Intersect((IEnumerable<int>)this.shlist);
+            this.shlist.Intersect(this.shlist.GetSource());
             Logger.Instance.LogInfo("Intersect succesfull");
-            this.shlist.Concat((IEnumerable<int>)this.shlist);
+            this.shlist.Concat(this.shlist.GetSource());
             Logger.Instance.LogInfo("Concat succesfull");
             this.shlist.First();
             Logger.Instance.LogInfo("First succesfull");
             this.shlist.FirstOrDefault();
             Logger.Instance.LogInfo("FirstOrDefault succesfull");
-            this.shlist.Single();
-            Logger.Instance.LogInfo("Single succesfull");
-            this.shlist.SingleOrDefault();
-            Logger.Instance.LogInfo("SingleOrDefault succesfull");
+            try
+            {
+                this.shlist.Single(x => x > Magicvalue);
+                Logger.Instance.LogInfo("Single succesfull");
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogError("single failed.", ex);
+            }
+
+            try
+            {
+                this.shlist.SingleOrDefault(x => x > Magicvalue);
+                Logger.Instance.LogInfo("SingleOrDefault succesfull");
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogError("singleOrDefault failed.", ex);
+            }
+
             this.shlist.ElementAt(0);
             Logger.Instance.LogInfo("ElementAt succesfull");
             this.shlist.ElementAtOrDefault(0);
@@ -98,13 +114,14 @@ namespace Practise
             this.shlist.Last();
             Logger.Instance.LogInfo("Last succesfull");
             this.shlist.LastOrDefault();
-            Logger.Instance.LogInfo("LastOrDefault succesfull");*/
+            Logger.Instance.LogInfo("LastOrDefault succesfull");
         }
 
         private void ThreeSecondsAction(object obj)
         {
             Logger.Instance.LogInfo("add async from threeseconaction");
             this.shlist.AddAsync(this.rand.Next());
+            Logger.Instance.LogInfo($"shlist count:{this.shlist.Count}");
         }
 
         private void SevenSecondsAction(object obj)

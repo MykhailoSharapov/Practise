@@ -8,16 +8,17 @@ namespace Practise
     using System.Collections.Generic;
     using System.IO;
     using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// FileService created for writing messages to file.
     /// </summary>
     public class FileService
     {
-        static SemaphoreSlim sem = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim Sem = new SemaphoreSlim(1, 1);
         private static readonly Lazy<FileService> InstanceValue = new Lazy<FileService>(() => new FileService());
         private readonly string fileName;
-        private readonly StreamWriter sw;
+        private StreamWriter sw;
 
         static FileService()
         {
@@ -42,20 +43,21 @@ namespace Practise
         /// <param name="text">input text.</param>
         public void Write(string text)
         {
-            sem.Wait();
+            Sem.Wait();
             this.sw.WriteLine(text);
-            sem.Release();
+            Sem.Release();
         }
 
         /// <summary>
         /// Writing input message in file asyncronous.
         /// </summary>
         /// <param name="text">input text.</param>
-        public void WriteAsync(string text)
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        public async Task WriteAsync(string text)
         {
-            sem.WaitAsync();
-            this.sw.WriteLineAsync(text);
-            sem.Release();
+            await Sem.WaitAsync();
+            await this.sw.WriteLineAsync(text);
+            Sem.Release();
         }
 
         /// <summary>
@@ -63,8 +65,14 @@ namespace Practise
         /// </summary>
         public void WriteBackUp()
         {
-            Thread.Sleep(1000);
-            File.Copy($"{LoggerConfigurations.DirectoryPath}{this.fileName}", $"{LoggerConfigurations.BackUpDirectoryPath}{this.GetFileName()}");
+            Sem.WaitAsync();
+
+            if (!File.Exists($"{LoggerConfigurations.BackUpDirectoryPath}{this.GetFileName()}"))
+            {
+                File.Copy($"{LoggerConfigurations.DirectoryPath}{this.fileName}", $"{LoggerConfigurations.BackUpDirectoryPath}{this.GetFileName()}");
+            }
+
+            Sem.Release();
         }
 
         private void CheckDirectory()
@@ -73,6 +81,7 @@ namespace Practise
             {
                 Directory.CreateDirectory(LoggerConfigurations.DirectoryPath);
             }
+
             if (!Directory.Exists(LoggerConfigurations.BackUpDirectoryPath))
             {
                 Directory.CreateDirectory(LoggerConfigurations.BackUpDirectoryPath);

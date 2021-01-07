@@ -18,6 +18,7 @@ namespace Practise
     {
         private readonly int randMinDelay = 100;
         private readonly int randMaxDelay = 500;
+        private SemaphoreSlim sem = new SemaphoreSlim(1, 1);
         private T[] source;
 
         /// <summary>
@@ -228,7 +229,7 @@ namespace Practise
         /// </summary>
         /// <param name="someEnuberable">some enumerable.</param>
         /// <returns>readonlyCollection.</returns>
-        public IReadOnlyCollection<T> Expect(IEnumerable<T> someEnuberable) => this.ConvertIEnumerableToIReadOnly(this.source.Except(someEnuberable));
+        public IEnumerable<T> Expect(IEnumerable<T> someEnuberable) => this.source.Except(someEnuberable);
 
         /// <summary>
         /// MyIntersectFunc.
@@ -257,16 +258,18 @@ namespace Practise
         public T FirstOrDefault() => this.source.FirstOrDefault();
 
         /// <summary>
-        /// MySingleFunc.
+        /// MySingle.
         /// </summary>
-        /// <returns>some type.</returns>
-        public T Single() => this.source.Single();
+        /// <param name="expression">exp.</param>
+        /// <returns>some array.</returns>
+        public IEnumerable<T> Single(Func<T, bool> expression) => (IEnumerable<T>)this.source.Single(expression);
 
         /// <summary>
         /// MySingleOrDefaultFunc.
         /// </summary>
+        /// /// <param name="expression">exp.</param>
         /// <returns>some type.</returns>
-        public T SingleOrDefault() => this.source.SingleOrDefault();
+        public T SingleOrDefault(Func<T, bool> expression) => this.source.SingleOrDefault(expression);
 
         /// <summary>
         /// MyElementAtFunc.
@@ -465,6 +468,16 @@ namespace Practise
         {
             //Array.Resize(ref this.source, 1);
             this.source = new T[1];
+            this.Count = 1;
+        }
+
+        /// <summary>
+        /// getsource.
+        /// </summary>
+        /// <returns>Array.</returns>
+        public T[] GetSource()
+        {
+            return this.source;
         }
 
         /// <summary>
@@ -494,12 +507,13 @@ namespace Practise
             this.Count++;
             if (this.source.Length < this.Count)
             {
-                Array.Resize(ref this.source, this.source.Length == 0 ? 1 : this.source.Length * 2);
+                Array.Resize(ref this.source, this.source.Length == 0 ? 1 : this.source.Length * 4);
             }
         }
 
         private void Insert(int index, T x)
         {
+            this.sem.WaitAsync();
             this.TryResize();
             for (var i = this.Count - 1; i > index; i--)
             {
@@ -507,6 +521,7 @@ namespace Practise
             }
 
             this.source[index] = x;
+            this.sem.Release();
         }
 
         private IReadOnlyCollection<T> ConvertIEnumerableToIReadOnly(IEnumerable<T> collection)
