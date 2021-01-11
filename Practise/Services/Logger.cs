@@ -5,6 +5,7 @@
 namespace Practise
 {
     using System;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Logger class to create log messages.
@@ -96,11 +97,14 @@ namespace Practise
             return result;
         }
 
-        private void WriteData(string data)
+        public async void WriteData(string data)
         {
             logMessagesCount++;
-            FileService.Instance.WriteAsync(data);
-            Console.WriteLine(data);
+            Task.Run(() =>
+             {
+                 FileService.Instance.WriteAsync(data);
+                 Console.WriteLine(data);
+             });
             if (logMessagesCount % 10 == 0)
             {
                 var message = this.LogCountHandler.Invoke(logMessagesCount);
