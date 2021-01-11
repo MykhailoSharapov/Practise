@@ -14,29 +14,12 @@ namespace Practise
         private static readonly Lazy<Logger> InstanceValue = new Lazy<Logger>(() => new Logger());
         private static int logMessagesCount;
 
-        static Logger()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Logger"/> class.
-        /// Construcor of logger need initialize fileservice to work with him.
-        /// </summary>
-        private Logger()
-        {
-        }
-
         /// <summary>
         /// delegate for messages count.
         /// </summary>
         /// <param name="count">count.</param>
         /// <returns>message.</returns>
-        public delegate string LogCountHandler(int count);
-
-        /// <summary>
-        /// event for count.
-        /// </summary>
-        public event LogCountHandler LogHandler;
+        public event Func<int ,string> LogCountHandler;
 
         /// <summary>
         /// Gets instance of logger to transfer it in plases where it will uses.
@@ -86,7 +69,7 @@ namespace Practise
         /// </summary>
         /// <param name="x">count.</param>
         /// <returns>message.</returns>
-        public string LogHandlerAction(int x)
+        public string LogHandlerPercentThreeAction(int x)
         {
             var result = string.Empty;
             if (x % 3 == 0)
@@ -94,6 +77,17 @@ namespace Practise
                 FileService.Instance.WriteBackUp();
             }
 
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Teneepercent.
+        /// </summary>
+        /// <param name="x">count.</param>
+        /// <returns>message.</returns>
+        public string LogHandlerPercentTenAction(int x)
+        {
+            var result = string.Empty;
             if (x % 10 == 0)
             {
                 result = $"----------------------{x.ToString()} strok-----------------------";
@@ -109,7 +103,7 @@ namespace Practise
             Console.WriteLine(data);
             if (logMessagesCount % 10 == 0)
             {
-                var message = this.LogHandler.Invoke(logMessagesCount);
+                var message = this.LogCountHandler.Invoke(logMessagesCount);
                 if (!message.Equals(string.Empty))
                 {
                     FileService.Instance.WriteAsync(message);

@@ -46,7 +46,8 @@ namespace Practise
 
         static LoggerConfigurations()
         {
-            Logger.Instance.LogHandler += Logger.Instance.LogHandlerAction;
+            Logger.Instance.LogCountHandler += Logger.Instance.LogHandlerPercentThreeAction;
+            Logger.Instance.LogCountHandler += Logger.Instance.LogHandlerPercentTenAction;
         }
     }
 }
