@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
+﻿// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Practise
 {
+    using System;
+
+    /// <summary>
+    /// Program.
+    /// </summary>
     public class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var f = new List<bool>();
-            Toy.OrderBy(o => o, f).ThenBy(t=>t);
+            new Starter().Run();
+            Console.ReadLine();
         }
     }
 }
